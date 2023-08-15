@@ -26,11 +26,25 @@ class NotesController {
         name,
         user_id,
       }
-   })
+    })
 
-   await knex("notes_tags").insert(tagsInsert)
+    await knex("notes_tags").insert(tagsInsert)
 
-   response.json()
+    response.json()
+  }
+
+  async show(request, response) {
+    const { id } = request.params
+
+    const note = await knex("notes").where({ id }).first()
+    const notes_tags = await knex("notes_tags").where({ note_id: id }).orderBy("name")
+    const notes_links = await knex("notes_links").where({ note_id:id }).orderBy("created_at")
+
+    return response.json({
+      ...note,
+      notes_tags,
+      notes_links
+    })
   }
 }
 
