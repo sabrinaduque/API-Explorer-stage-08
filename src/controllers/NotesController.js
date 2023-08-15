@@ -38,7 +38,7 @@ class NotesController {
 
     const note = await knex("notes").where({ id }).first()
     const notes_tags = await knex("notes_tags").where({ note_id: id }).orderBy("name")
-    const notes_links = await knex("notes_links").where({ note_id:id }).orderBy("created_at")
+    const notes_links = await knex("notes_links").where({ note_id: id }).orderBy("created_at")
 
     return response.json({
       ...note,
@@ -54,6 +54,14 @@ class NotesController {
 
     return response.json()
   }
+
+  async index(request, response) {
+    const { user_id } = request.query
+    const notes = await knex("notes").where({ user_id }).orderBy("title")
+
+    return response.json(notes)
+  }
+
 }
 
 module.exports = NotesController
