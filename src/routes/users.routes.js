@@ -1,22 +1,13 @@
 const { Router } = require("express")
 
 const UsersController = require("../controllers/UsersController")
+const ensureAuthenticated = require("../middleware/ensureAuthenticated")
 
 const usersRoutes = Router()
 
-function myMiddleware(request, response, next) {
-  console.log("vc entrou no middleware")
-
-  if (!request.body.isAdmin) {
-    return response.json({ message: "user unauthorized" })
-  }
-
-  next()
-}
-
 const usersController = new UsersController()
 
-usersRoutes.post("/", myMiddleware, usersController.create)
-usersRoutes.put("/:id", usersController.update)
+usersRoutes.post("/", usersController.create)
+usersRoutes.put("/", ensureAuthenticated, usersController.update)
 
 module.exports = usersRoutes
